@@ -48,26 +48,38 @@ A high-performance, fully responsive **NeoBrutalist** web version of the Vastavi
 ```
 src/
 ├── app/
-│   ├── (marketing)/        # Public pages with Navbar+Footer
-│   │   └── layout.tsx
-│   ├── (authed)/           # Auth-guarded pages with sidebar
+│   ├── (authed)/           # Auth-guarded pages with noindex + ClientLayout
 │   │   ├── layout.tsx
+│   │   ├── ClientLayout.tsx
 │   │   ├── dashboard/
 │   │   ├── profile/
 │   │   ├── settings/
 │   │   └── notifications/
-│   ├── courses/            # Listing + [slug] dynamic route
-│   ├── api/                # (reserved)
+│   ├── courses/            # Listing + [slug] dynamic route with JSON-LD
+│   ├── about/              # layout.tsx + page.tsx (BreadcrumbList)
+│   ├── contact/            # layout.tsx + page.tsx (FAQ JSON-LD)
+│   ├── pricing/            # layout.tsx + page.tsx (FAQ + Product JSON-LD)
+│   ├── lesson/, practice/, quiz/, meetings/, ai-chat/, whiteboard/
+│   ├── leaderboard/, pyq/
+│   ├── login/, signup/, forgot-password/  # noindex
+│   ├── terms/, privacy/, refund/, shipping/
 │   ├── globals.css         # Full NeoBrutalist design system
-│   ├── layout.tsx          # Root layout
-│   └── page.tsx            # Landing page
+│   ├── layout.tsx          # Root layout (global metadata + JSON-LD)
+│   ├── page.tsx            # Landing page (Org + WebSite + SoftwareApp)
+│   ├── robots.ts           # Dynamic robots per user-agent
+│   └── sitemap.ts          # Dynamic sitemap with all routes + courses
 ├── components/
 │   ├── Navbar.tsx          # Responsive nav + mobile full-screen overlay
 │   ├── Footer.tsx
-│   ├── Sidebar.tsx         # Dashboard sidebar
-│   └── Toast.tsx
-└── lib/
-    └── auth.tsx            # Auth context (localStorage)
+│   ├── Sidebar.tsx
+│   ├── Toast.tsx
+│   └── JsonLd.tsx          # Client JSON-LD component
+├── lib/
+│   ├── auth.tsx            # Auth context (localStorage)
+│   ├── seo.ts              # SITE, NAV_ROUTES, KEYWORDS config
+│   ├── metadata.ts         # makeMetadata() helper
+│   └── structured-data.ts  # JSON-LD schema generators
+└── .agents/                # Agents documentation
 ```
 
 ---
@@ -133,11 +145,26 @@ Add `NEXT_PUBLIC_RAZORPAY_KEY` to `.env.local` and the four legal pages (Terms, 
 
 ---
 
+## SEO
+
+Full SEO implementation across all 27 routes:
+
+- **Metadata**: per-page `<title>`, `description`, `keywords`, Open Graph, Twitter cards, canonical URLs
+- **Structured Data**: `Organization`, `WebSite`, `SoftwareApp` (global), `Course` + `BreadcrumbList` (9 course pages), `FAQPage` (pricing/contact), `Product` (Pro plan)
+- **Dynamic `robots.ts`**: Googlebot/Bingbot rules, authed routes `noindex`
+- **Dynamic `sitemap.xml`**: all 27 routes + 9 course detail pages
+- **PWA**: `manifest.json`, icons, theme-color
+- **Accessibility**: skip-link, `lang="en-IN"`, semantic HTML
+
+See `.agents/SEO.md` for full documentation.
+
+---
+
 ## Knowledge Graph (`graphify-out/`)
 
-Run `graphify update` for an AST-level map of the entire codebase. See `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.html` (open in any browser).
+Run `python _refresh_graphify.py` for an AST-level map of the entire codebase. See `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.html` (open in any browser).
 
-- 180 nodes · 223 edges · 25 communities
+- 309 nodes · 429 edges · 47 communities
 - 100% EXTRACTED (no LLM cost)
 - Key abstractions: `useToast()`, `useAuth()`, `Sidebar()`, `Navbar()`, `compilerOptions`
 
