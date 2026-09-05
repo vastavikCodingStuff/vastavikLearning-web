@@ -1,0 +1,116 @@
+# SEO Documentation & Checklist
+
+This document outlines the SEO implementation for Vastavik Learning Web.
+
+## Architecture Overview
+
+- **Framework**: Next.js 14 App Router with SSG
+- **Metadata Strategy**: Centralized config (`src/lib/seo.ts`) + per-route `layout.tsx` with `makeMetadata()`
+- **Structured Data**: JSON-LD via `src/lib/structured-data.ts`, injected per-page via server components (`dangerouslySetInnerHTML`) or client (`JsonLd` component)
+- **Crawlability**: All marketing pages static, legal pages static, auth pages noindex, authed pages noindex
+
+## Pages & Metadata Status
+
+| Route | Type | Metadata | Structured Data | Robots |
+|-------|------|----------|----------------|--------|
+| `/` | SSG | ✅ Full | Org, WebSite, SoftwareApp | index,follow |
+| `/about` | SSG | ✅ Full | BreadcrumbList | index,follow |
+| `/courses` | SSG | ✅ Full | — | index,follow |
+| `/courses/[slug]` (9) | SSG | ✅ Dynamic | Course, BreadcrumbList | index,follow |
+| `/lesson` | SSG | ✅ Full | — | index,follow |
+| `/practice` | SSG | ✅ Full | — | index,follow |
+| `/quiz` | SSG | ✅ Full | — | index,follow |
+| `/meetings` | SSG | ✅ Full | — | index,follow |
+| `/ai-chat` | SSG | ✅ Full | — | index,follow |
+| `/whiteboard` | SSG | ✅ Full | — | index,follow |
+| `/leaderboard` | SSG | ✅ Full | — | index,follow |
+| `/pricing` | SSG | ✅ Full | FAQPage, Product | index,follow |
+| `/pyq` | SSG | ✅ Full | — | index,follow |
+| `/contact` | SSG | ✅ Full | FAQPage | index,follow |
+| `/login` | SSG | ✅ noindex | — | noindex,follow |
+| `/signup` | SSG | ✅ noindex | — | noindex,follow |
+| `/forgot-password` | SSG | ✅ noindex | — | noindex,follow |
+| `/terms` | SSG | ✅ Full | — | index,follow |
+| `/privacy` | SSG | ✅ Full | — | index,follow |
+| `/refund` | SSG | ✅ Full | — | index,follow |
+| `/shipping` | SSG | ✅ Full | — | index,follow |
+| `/dashboard` | SSG | ✅ noindex | — | noindex,follow |
+| `/profile` | SSG | ✅ noindex | — | noindex,follow |
+| `/settings` | SSG | ✅ noindex | — | noindex,follow |
+| `/notifications` | SSG | ✅ noindex | — | noindex,follow |
+
+## Structured Data Inventory
+
+| Schema | Pages | Implementation |
+|--------|-------|----------------|
+| `Organization` | All (via root layout) | Server-rendered in root layout |
+| `WebSite` | All (via root layout) | Server-rendered in root layout |
+| `SoftwareApplication` | All (via root layout) | Server-rendered in root layout |
+| `Course` | `/courses/[slug]` (9) | Server page `dangerouslySetInnerHTML` |
+| `BreadcrumbList` | `/about`, `/courses/[slug]` | Server page `dangerouslySetInnerHTML` |
+| `FAQPage` | `/pricing`, `/contact` | Client `JsonLd` component |
+| `Product` | `/pricing` (Pro plan) | Client `JsonLd` component |
+
+## Technical SEO Features
+
+- **Canonical URLs**: All pages via `alternates.canonical`
+- **Open Graph / Twitter**: All pages via `makeMetadata()`
+- **Robots.txt**: Dynamic, disallows authed/private routes
+- **Sitemap.xml**: Dynamic with all routes + course details
+- **Manifest / PWA**: `public/manifest.json`, icons, theme-color
+- **Security Headers**: CSP, HSTS, COOP/COEP/CORP, etc. (see `next.config.mjs`)
+- **Canonical Domain**: `https://vastavik.app` via `metadataBase`
+- **Lang / Locale**: `en-IN` with hreflang alternates
+- **Skip Link**: Accessibility + bot friendly
+
+## Pre-Deploy Checklist
+
+- [ ] Verify `NEXT_PUBLIC_RAZORPAY_KEY` in production env
+- [ ] Submit sitemap to Google Search Console
+- [ ] Add Google Search Console verification meta tag
+- [ ] Add Bing Webmaster verification meta tag
+- [ ] Verify structured data with [Rich Results Test](https://search.google.com/test/rich-results)
+- [ ] Verify Core Web Vitals in production (LCP < 2.5s, CLS < 0.1, INP < 200ms)
+- [ ] Confirm CSP doesn't block Razorpay checkout iframe
+- [ ] Verify `robots.txt` returns 200 with correct disallows
+- [ ] Verify `sitemap.xml` returns 200 with all 27 URLs
+
+## Adding New Pages (SEO Checklist)
+
+1. Create route under `src/app/`
+2. Add `layout.tsx` with `export const metadata = makeMetadata({...})` and `export default function Layout({children}){return children;}`
+3. Add route to `NAV_ROUTES` in `src/lib/seo.ts` if it should be in sitemap
+4. Add structured data if applicable (Course, FAQ, Product, etc.)
+5. Run `npm run build` and verify no type errors
+6. Test with `npm run dev` and inspect `<head>` and JSON-LD
+
+## Debugging Commands
+
+```bash
+# Verify build
+npm run build
+
+# Check generated metadata for a page
+curl -s http://localhost:3000/about | grep -A 20 "<head>"
+
+# Test structured data
+# Use browser DevTools > Application > Structured Data or
+# https://validator.schema.org/
+
+# Check sitemap
+curl http://localhost:3000/sitemap.xml
+
+# Check robots
+curl http://localhost:3000/robots.txt
+```
+
+## Maintenance
+
+- Run `bash .agents/tools/verify-graphify.sh` after any `src/` changes
+- Update `NAV_ROUTES` when adding/removing routes
+- Review SEO audit quarterly
+- Update legal pages annually or when policy changes
+
+---
+
+*Generated by opencode — Vastavik Learning Web SEO implementation v1.0*

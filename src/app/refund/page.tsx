@@ -1,5 +1,3 @@
-export const metadata = { title: "Cancellation & Refund — Vastavik Learning" };
-
 export default function RefundPage() {
   return (
     <section className="section">
