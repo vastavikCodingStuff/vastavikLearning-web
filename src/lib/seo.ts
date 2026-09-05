@@ -5,12 +5,12 @@ export const SITE = {
   tagline: "Code. Create. Conquer.",
   description:
     "A high-performance learning platform for ICSE, CBSE and collegiate computer science. Live classrooms, AI tutor, in-browser code editor, OCR exercise scanning, and PYQ archive — wrapped in a bold Neo-Brutalist design.",
-  url: "https://vastavik.app",
-  ogImage: "https://vastavik.app/og.svg",
+  url: "https://vastaviklearning.online",
+  ogImage: "https://vastaviklearning.online/og.svg",
   locale: "en_IN",
   twitter: "@vastavik",
   publisher: "Vastavik Education Pvt. Ltd.",
-  email: "support@vastavik.app",
+  email: "support@vastaviklearning.online",
   phone: "+91 98765 43210",
   address: {
     street: "Bengaluru",

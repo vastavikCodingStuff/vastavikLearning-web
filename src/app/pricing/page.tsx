@@ -22,7 +22,7 @@ const faqs = [
   { q: "Can I cancel anytime?", a: "Yes. Cancel from your dashboard with one click. You'll keep access until the end of your billing period." },
   { q: "What payment methods do you support?", a: "UPI (GPay, PhonePe, Paytm, BHIM), debit/credit cards, netbanking, and wallets. All via Razorpay." },
   { q: "Is there a refund policy?", a: "Yes — 7-day no-questions-asked refund for first-time subscribers. See our Cancellation & Refund page." },
-  { q: "Do you offer student discounts?", a: "Yes! 50% off with a valid .edu email. Contact us at support@vastavik.app." },
+  { q: "Do you offer student discounts?", a: "Yes! 50% off with a valid .edu email. Contact us at support@vastaviklearning.online." },
 ];
 
 export default function PricingPage() {

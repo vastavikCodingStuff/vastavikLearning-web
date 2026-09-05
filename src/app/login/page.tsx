@@ -20,7 +20,7 @@ export default function LoginPage() {
     setTimeout(() => router.push("/dashboard"), 400);
   };
   const social = (p: string) => {
-    setUser({ name: p + " User", email: p + "@vastavik.app", role: "student" });
+    setUser({ name: p + " User", email: p + "@vastaviklearning.online", role: "student" });
     toast("Signed in with " + p, "ok");
     setTimeout(() => router.push("/dashboard"), 400);
   };

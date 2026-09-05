@@ -12,7 +12,7 @@ export default function TermsPage() {
 
           <h2>1. Acceptance of Terms</h2>
           <p>By accessing or using the Vastavik Learning platform (the &ldquo;Service&rdquo;), you agree to be bound by these Terms &amp; Conditions (&ldquo;Terms&rdquo;). If you disagree with any part, you may not use the Service.</p>
-          <p>Vastavik Education Pvt. Ltd. (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) operates the website vastavik.app and related applications.</p>
+          <p>Vastavik Education Pvt. Ltd. (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) operates the website vastaviklearning.online and related applications.</p>
 
           <h2>2. Eligibility</h2>
           <ul>
@@ -23,7 +23,7 @@ export default function TermsPage() {
           </ul>
 
           <h2>3. Account &amp; Security</h2>
-          <p>You are responsible for safeguarding your account credentials. Notify us immediately at <a href="mailto:support@vastavik.app">support@vastavik.app</a> if you suspect unauthorized access.</p>
+          <p>You are responsible for safeguarding your account credentials. Notify us immediately at <a href="mailto:support@vastaviklearning.online">support@vastaviklearning.online</a> if you suspect unauthorized access.</p>
 
           <h2>4. Subscriptions &amp; Payments</h2>
           <p>Vastavik offers Free and Premium (Pro / Team) subscription plans. Premium subscriptions are processed via <strong>Razorpay</strong> and support UPI Autopay (recurring monthly charges).</p>
@@ -78,7 +78,7 @@ export default function TermsPage() {
           <p>These Terms shall be governed by and construed in accordance with the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Bengaluru, Karnataka.</p>
 
           <h2>14. Contact</h2>
-          <p>Questions about these Terms? Contact us at <a href="mailto:legal@vastavik.app">legal@vastavik.app</a> or visit our <a href="/contact">Contact page</a>.</p>
+          <p>Questions about these Terms? Contact us at <a href="mailto:legal@vastaviklearning.online">legal@vastaviklearning.online</a> or visit our <a href="/contact">Contact page</a>.</p>
         </div>
       </div>
     </section>

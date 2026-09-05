@@ -85,7 +85,7 @@ export default function PrivacyPage() {
             <li>Withdraw consent at any time</li>
             <li>Lodge a complaint with a data protection authority</li>
           </ul>
-          <p>To exercise any of these rights, email <a href="mailto:privacy@vastavik.app">privacy@vastavik.app</a> or visit Settings → Privacy.</p>
+          <p>To exercise any of these rights, email <a href="mailto:privacy@vastaviklearning.online">privacy@vastaviklearning.online</a> or visit Settings → Privacy.</p>
 
           <h2>7. Children&apos;s Privacy</h2>
           <p>Vastavik is designed for students aged 13+. We do not knowingly collect data from children under 13. Parents/guardians can request deletion of their child&apos;s data at any time.</p>
@@ -105,7 +105,7 @@ export default function PrivacyPage() {
           <p>We will notify you via email of any material changes at least 14 days before they take effect.</p>
 
           <h2>11. Contact</h2>
-          <p>Data Protection Officer: <a href="mailto:dpo@vastavik.app">dpo@vastavik.app</a><br />Address: Vastavik Education Pvt. Ltd., Bengaluru, Karnataka 560001, India</p>
+          <p>Data Protection Officer: <a href="mailto:dpo@vastaviklearning.online">dpo@vastaviklearning.online</a><br />Address: Vastavik Education Pvt. Ltd., Bengaluru, Karnataka 560001, India</p>
         </div>
       </div>
     </section>

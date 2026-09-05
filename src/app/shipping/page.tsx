@@ -63,7 +63,7 @@ export default function ShippingPage() {
 
           <h2>7. Delivery Issues</h2>
           <h3>7.1 Package not delivered</h3>
-          <p>If your package hasn&apos;t arrived within the estimated window, contact us at <a href="mailto:shipping@vastavik.app">shipping@vastavik.app</a> within 14 days. We&apos;ll investigate with the courier and either resend or refund.</p>
+          <p>If your package hasn&apos;t arrived within the estimated window, contact us at <a href="mailto:shipping@vastaviklearning.online">shipping@vastaviklearning.online</a> within 14 days. We&apos;ll investigate with the courier and either resend or refund.</p>
 
           <h3>7.2 Damaged or wrong item</h3>
           <p>If your item arrives damaged or is the wrong size/product, email us within <strong>48 hours</strong> of delivery with photos. We&apos;ll arrange a free exchange or full refund.</p>
@@ -75,7 +75,7 @@ export default function ShippingPage() {
             <li>Original packaging must be intact</li>
             <li>Exchange shipping is free for defective/wrong items; otherwise ₹79 (deducted from refund/exchange)</li>
           </ul>
-          <p>To request an exchange, email <a href="mailto:exchange@vastavik.app">exchange@vastavik.app</a> with your order number and the size you need.</p>
+          <p>To request an exchange, email <a href="mailto:exchange@vastaviklearning.online">exchange@vastaviklearning.online</a> with your order number and the size you need.</p>
 
           <h2>9. Returns &amp; Refunds (Physical Items)</h2>
           <ul>
@@ -93,8 +93,8 @@ export default function ShippingPage() {
 
           <h2>12. Contact Shipping Support</h2>
           <p>
-            📧 <a href="mailto:shipping@vastavik.app">shipping@vastavik.app</a><br />
-            📧 <a href="mailto:exchange@vastavik.app">exchange@vastavik.app</a> (exchanges only)<br />
+            📧 <a href="mailto:shipping@vastaviklearning.online">shipping@vastaviklearning.online</a><br />
+            📧 <a href="mailto:exchange@vastaviklearning.online">exchange@vastaviklearning.online</a> (exchanges only)<br />
             📞 +91 98765 43210 (Mon–Fri, 10am–6pm IST)
           </p>
         </div>

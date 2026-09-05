@@ -15,7 +15,7 @@ export default function RefundPage() {
 
           <h2>2. How to Request a Refund</h2>
           <ol>
-            <li>Email <a href="mailto:billing@vastavik.app">billing@vastavik.app</a> with your registered email and payment ID.</li>
+            <li>Email <a href="mailto:billing@vastaviklearning.online">billing@vastaviklearning.online</a> with your registered email and payment ID.</li>
             <li>Or use the in-app refund request form (Settings → Billing → Request Refund).</li>
             <li>We&apos;ll confirm within 1 business day.</li>
             <li>Refunds are processed within 5–7 business days to the original payment method.</li>
@@ -79,7 +79,7 @@ export default function RefundPage() {
 
           <h2>8. Contact Billing Support</h2>
           <p>
-            📧 <a href="mailto:billing@vastavik.app">billing@vastavik.app</a><br />
+            📧 <a href="mailto:billing@vastaviklearning.online">billing@vastaviklearning.online</a><br />
             📞 +91 98765 43210 (Mon–Fri, 10am–6pm IST)<br />
             💬 Live chat (bottom right of this page)
           </p>

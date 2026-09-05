@@ -33,8 +33,8 @@ const TIMELINE = [
 
 export default function AboutPage() {
   const breadcrumb = breadcrumbLd([
-    { name: "Home", url: "https://vastavik.app/" },
-    { name: "About", url: "https://vastavik.app/about" },
+    { name: "Home", url: "https://vastaviklearning.online/" },
+    { name: "About", url: "https://vastaviklearning.online/about" },
   ]);
   return (
     <main id="main">

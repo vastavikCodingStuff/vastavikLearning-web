@@ -47,8 +47,8 @@ export default function ContactContent() {
             <div>
               <div className="b-card mb-3">
                 <h3>📧 Email</h3>
-                <p className="muted mt-1">support@vastavik.app</p>
-                <p className="muted">partnerships@vastavik.app</p>
+                <p className="muted mt-1">support@vastaviklearning.online</p>
+                <p className="muted">partnerships@vastaviklearning.online</p>
               </div>
               <div className="b-card mb-3">
                 <h3>📞 Phone</h3>

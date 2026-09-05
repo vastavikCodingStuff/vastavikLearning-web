@@ -29,7 +29,7 @@ export default function ProfileContent() {
           <div className="b-card text-center">
             <div className="b-avatar b-avatar--xl" style={{ background: "var(--purple)", margin: "0 auto" }}>{initial}</div>
             <h2 className="mt-2">{user?.name || "Learner"}</h2>
-            <p className="muted">{user?.email || "guest@vastavik.app"}</p>
+            <p className="muted">{user?.email || "guest@vastaviklearning.online"}</p>
             {user?.board && <span className="b-tag b-tag--blue mt-2" style={{ display: "inline-flex" }}>{user.board}</span>}
             <div className="flex gap-1 justify-center mt-3" style={{ flexWrap: "wrap" }}>
               <Link href="/settings" className="b-btn b-btn--ghost b-btn--sm">⚙ Edit</Link>
