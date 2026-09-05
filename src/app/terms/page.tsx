@@ -1,5 +1,3 @@
-export const metadata = { title: "Terms & Conditions — Vastavik Learning" };
-
 export default function TermsPage() {
   return (
     <section className="section">

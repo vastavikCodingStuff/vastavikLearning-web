@@ -1,4 +1,20 @@
-export const metadata = { title: "About — Vastavik Learning" };
+import type { Metadata } from "next";
+import { makeMetadata } from "@/lib/metadata";
+import { breadcrumbLd } from "@/lib/structured-data";
+
+export const metadata: Metadata = makeMetadata({
+  title: "About Us — Our Story & Mission",
+  description:
+    "Vastavik Learning was founded to make world-class computer science education free and accessible. Meet the team, our values, and the journey from hostel room to 25,000+ learners.",
+  path: "/about",
+  keywords: [
+    "about Vastavik Learning",
+    "Vastavik team",
+    "education startup India",
+    "mission free education",
+    "computer science education",
+  ],
+});
 
 const VALUES = [
   { icon: "🎯", title: "Student-first", desc: "Every feature exists because students asked for it." },
@@ -16,8 +32,13 @@ const TIMELINE = [
 ];
 
 export default function AboutPage() {
+  const breadcrumb = breadcrumbLd([
+    { name: "Home", url: "https://vastavik.app/" },
+    { name: "About", url: "https://vastavik.app/about" },
+  ]);
   return (
-    <>
+    <main id="main">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <section className="b-page-head" style={{ background: "var(--lime)" }}>
         <div className="container">
           <span className="b-tag mb-2" style={{ display: "inline-flex" }}>🚀 OUR STORY</span>
@@ -63,6 +84,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 }

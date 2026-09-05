@@ -1,5 +1,3 @@
-export const metadata = { title: "Shipping & Exchange — Vastavik Learning" };
-
 export default function ShippingPage() {
   return (
     <section className="section">

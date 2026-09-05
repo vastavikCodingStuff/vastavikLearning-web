@@ -1,0 +1,17 @@
+{
+  "name": "Vastavik Learning",
+  "short_name": "Vastavik",
+  "description": "Code. Create. Conquer. — A high-performance Neo-Brutalist learning platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFE500",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/og.svg", "sizes": "1200x630", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en-IN"
+}
