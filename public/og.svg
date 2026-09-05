@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#FFE500"/>
+  <rect x="40" y="40" width="160" height="160" fill="#2563EB" stroke="#000" stroke-width="6"/>
+  <text x="120" y="160" font-size="120" text-anchor="middle" fill="#FFF" font-family="Arial" font-weight="900">V</text>
+  <text x="240" y="240" font-size="100" text-anchor="start" fill="#000" font-family="Arial Black, sans-serif" font-weight="900">Vastavik Learning</text>
+  <text x="240" y="320" font-size="44" text-anchor="start" fill="#000" font-family="Arial" font-weight="700">Code. Create. Conquer.</text>
+  <rect x="240" y="380" width="500" height="80" fill="#9933FF" stroke="#000" stroke-width="5"/>
+  <text x="490" y="435" font-size="36" text-anchor="middle" fill="#FFF" font-family="Arial" font-weight="800">Start Free →</text>
+</svg>
