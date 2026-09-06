@@ -1,6 +1,25 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const NO_FOOTER_ROUTES = [
+  "/dashboard",
+  "/notifications",
+  "/profile",
+  "/settings",
+  "/whiteboard",
+  "/meetings",
+  "/ai-chat",
+  "/lesson",
+];
 
 export default function Footer() {
+  const pathname = usePathname();
+  const shouldHide = NO_FOOTER_ROUTES.some(
+    (r) => pathname === r || pathname?.startsWith(r + "/")
+  );
+  if (shouldHide) return null;
+
   return (
     <footer className="b-footer">
       <div className="container">
