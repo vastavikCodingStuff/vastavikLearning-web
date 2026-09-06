@@ -401,10 +401,11 @@ textarea.b-input { resize: vertical; min-height: 120px; line-height: 1.5; }
 }
 .b-nav__inner {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 0; gap: 16px;
+  padding-top: 10px; padding-bottom: 10px; gap: 16px;
+  width: 100%;
 }
 @media (min-width: 901px) {
-  .b-nav__inner { padding: 12px 0; gap: 20px; }
+  .b-nav__inner { padding-top: 12px; padding-bottom: 12px; gap: 20px; }
 }
 .b-nav__brand {
   display: flex; align-items: center; gap: 10px;
