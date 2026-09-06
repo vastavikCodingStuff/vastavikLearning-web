@@ -102,38 +102,53 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Full-screen mobile overlay */}
+      {/* Compact single-page mobile overlay */}
       <div
         className={"b-nav__overlay" + (open ? " b-nav__overlay--open" : "")}
         role="dialog"
         aria-label="Main menu"
         aria-modal="true"
       >
-        <button className="b-nav__overlay-close" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
-        <ul className="b-nav__overlay-list">
-          {MOBILE_NAV.map((l) => (
-            <li key={l.href}>
-              <Link
-                href={l.href}
-                className={"b-nav__overlay-link" + (here(l.href) ? " b-nav__overlay-link--active" : "")}
-                onClick={() => setOpen(false)}
-              >
-                {l.label}
+        <div className="b-nav__overlay-header">
+          <div className="flex items-center gap-1">
+            <div className="b-nav__logo" style={{ width: 34, height: 34 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M9 18l-6-6 6-6" /><path d="M15 6l6 6-6 6" />
+              </svg>
+            </div>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: "1.1rem" }}>
+              Vastavik
+            </span>
+          </div>
+          <button className="b-nav__overlay-close" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
+        </div>
+
+        <div className="b-nav__overlay-body">
+          <ul className="b-nav__overlay-list">
+            {MOBILE_NAV.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className={"b-nav__overlay-link" + (here(l.href) ? " b-nav__overlay-link--active" : "")}
+                  onClick={() => setOpen(false)}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="b-nav__overlay-cta">
+            {user ? (
+              <Link href="/profile" className="b-btn b-btn--primary b-btn--sm" style={{ gridColumn: "1 / -1", minHeight: 42 }} onClick={() => setOpen(false)}>
+                My Profile →
               </Link>
-            </li>
-          ))}
-        </ul>
-        <div className="b-nav__overlay-cta">
-          {user ? (
-            <Link href="/profile" className="b-btn b-btn--primary b-btn--lg" onClick={() => setOpen(false)}>
-              My Profile →
-            </Link>
-          ) : (
-            <>
-              <Link href="/login" className="b-btn b-btn--ghost b-btn--lg" onClick={() => setOpen(false)}>Log in</Link>
-              <Link href="/signup" className="b-btn b-btn--primary b-btn--lg" onClick={() => setOpen(false)}>Get Started →</Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link href="/login" className="b-btn b-btn--ghost b-btn--sm" style={{ minHeight: 42 }} onClick={() => setOpen(false)}>Log in</Link>
+                <Link href="/signup" className="b-btn b-btn--primary b-btn--sm" style={{ minHeight: 42 }} onClick={() => setOpen(false)}>Get Started →</Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </>
