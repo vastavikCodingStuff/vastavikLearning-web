@@ -63,7 +63,7 @@ export default function Navbar() {
                 <path d="M9 18l-6-6 6-6" /><path d="M15 6l6 6-6 6" />
               </svg>
             </div>
-            <span>Vastavik Learning</span>
+            <span style={{ fontSize: "clamp(1rem, 3.8vw, 1.25rem)", whiteSpace: "nowrap" }}>Vastavik Learning</span>
           </Link>
 
           <nav>
