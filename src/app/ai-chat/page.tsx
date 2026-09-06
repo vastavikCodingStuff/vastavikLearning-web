@@ -54,7 +54,7 @@ export default function AiChatPage() {
 
       <section className="section">
         <div className="container">
-          <div className="grid" style={{ gridTemplateColumns: "1fr 280px", gap: 24 }}>
+          <div className="b-cols-sidebar">
             <div className="b-chat">
               <div className="b-chat__head">
                 <div className="flex items-center gap-1">

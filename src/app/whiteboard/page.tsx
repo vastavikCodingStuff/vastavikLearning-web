@@ -137,15 +137,19 @@ export default function WhiteboardPage() {
       <section className="section">
         <div className="container">
           <div className="b-board">
-            <div className="b-board__bar">
-              {TOOLS.map((t) => (
-                <button key={t.id} className={"b-board__tool" + (tool === t.id ? " b-board__tool--active" : "")} title={t.label} onClick={() => setTool(t.id)}>{t.icon}</button>
-              ))}
-              <div style={{ width: 1, height: 32, background: "var(--border)", margin: "0 8px" }}></div>
-              {COLORS.map((c) => (
-                <button key={c} className={"b-board__color" + (color === c ? " b-board__color--active" : "")} style={{ background: c }} onClick={() => setColor(c)}></button>
-              ))}
-              <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+            <div className="b-board__bar" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                {TOOLS.map((t) => (
+                  <button key={t.id} className={"b-board__tool" + (tool === t.id ? " b-board__tool--active" : "")} title={t.label} onClick={() => setTool(t.id)}>{t.icon}</button>
+                ))}
+                <div style={{ width: 2, height: 32, background: "var(--border)", margin: "0 4px" }}></div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+                  {COLORS.map((c) => (
+                    <button key={c} className={"b-board__color" + (color === c ? " b-board__color--active" : "")} style={{ background: c }} onClick={() => setColor(c)}></button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
                 <button className="b-btn b-btn--ghost b-btn--sm" onClick={undo}>↺ Undo</button>
                 <button className="b-btn b-btn--ghost b-btn--sm" onClick={clear}>🗑 Clear</button>
                 <button className="b-btn b-btn--primary b-btn--sm" onClick={download}>💾 Save PNG</button>

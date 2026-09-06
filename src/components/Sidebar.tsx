@@ -25,8 +25,9 @@ export default function Sidebar() {
   const toast = useToast();
 
   return (
-    <aside className="b-dash__side">
-      <ul className="b-dash__nav">
+    <aside className="b-dash__side" aria-label="Dashboard sidebar">
+      <nav aria-label="Dashboard navigation">
+        <ul className="b-dash__nav">
         {ITEMS.map((it) => (
           <li key={it.href}>
             <Link href={it.href} className={path === it.href ? "active" : ""}>
@@ -48,6 +49,7 @@ export default function Sidebar() {
           </a>
         </li>
       </ul>
+      </nav>
     </aside>
   );
 }

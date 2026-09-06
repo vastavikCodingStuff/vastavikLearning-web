@@ -54,7 +54,7 @@ export default function MeetingsPage() {
               {TILES.map((t) => (
                 <div key={t.name} className="b-meet__tile">
                   {video ? (
-                    <div style={{ width: "100%", height: "100%", background: `linear-gradient(135deg, ${t.color}, var(--black))`, display: "grid", placeItems: "center", fontSize: "3rem", fontWeight: 900 }}>{t.initial}</div>
+                    <div style={{ width: "100%", height: "100%", background: `linear-gradient(135deg, ${t.color}, var(--black))`, display: "grid", placeItems: "center", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 900 }}>{t.initial}</div>
                   ) : (
                     <div style={{ fontSize: "2rem" }}>📷❌</div>
                   )}

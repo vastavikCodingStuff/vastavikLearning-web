@@ -11,9 +11,9 @@ export default function DashboardContent() {
       <main className="b-dash__main">
         <div className="b-dash__head">
           <div>
-            <h1>
+            <h1 style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}>
               Welcome back,{" "}
-              <span style={{ background: "var(--yellow)", padding: "0 6px", border: "3px solid var(--border)", display: "inline-block", transform: "rotate(-1deg)" }}>
+              <span style={{ background: "var(--yellow)", padding: "0 8px", border: "2px solid var(--border)", borderRightWidth: 4, borderBottomWidth: 4, borderRadius: 8, display: "inline-block", transform: "rotate(-1deg)" }}>
                 {user?.name || "Learner"}
               </span>{" "}
               👋

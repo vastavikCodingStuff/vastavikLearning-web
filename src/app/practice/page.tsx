@@ -110,7 +110,7 @@ export default function PracticePage() {
                 <div className="b-code__output">{out}</div>
               </div>
 
-              <div className="flex gap-1 mt-2" style={{ flexWrap: "wrap" }}>
+              <div className="flex gap-2 mt-3" style={{ flexWrap: "wrap" }}>
                 <button className="b-btn b-btn--primary" onClick={run}>▶ Run</button>
                 <button className="b-btn b-btn--success" onClick={() => toast("🎉 Solution accepted! +50 XP", "ok")}>✓ Submit</button>
                 <button className="b-btn b-btn--ghost" onClick={() => toast("Formatted", "ok")}>✨ Format</button>
