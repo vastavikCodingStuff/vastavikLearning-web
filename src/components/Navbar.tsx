@@ -56,49 +56,51 @@ export default function Navbar() {
   return (
     <>
       <header className="b-nav">
-        <div className="container b-nav__inner">
-          <Link href="/" className="b-nav__brand">
-            <div className="b-nav__logo">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M9 18l-6-6 6-6" /><path d="M15 6l6 6-6 6" />
-              </svg>
+        <div className="container">
+          <div className="b-nav__inner">
+            <Link href="/" className="b-nav__brand">
+              <div className="b-nav__logo">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M9 18l-6-6 6-6" /><path d="M15 6l6 6-6 6" />
+                </svg>
+              </div>
+              <span style={{ fontSize: "clamp(1rem, 3.8vw, 1.25rem)", whiteSpace: "nowrap" }}>Vastavik Learning</span>
+            </Link>
+
+            <nav>
+              <ul className="b-nav__links">
+                {NAV_LINKS.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className={"b-nav__link" + (here(l.href) ? " b-nav__link--active" : "")}>
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="b-nav__cta b-nav__cta--desktop">
+              {user ? (
+                <Link href="/profile" className="b-avatar" title={user.name || user.email}>{initial}</Link>
+              ) : (
+                <>
+                  <Link href="/login" className="b-btn b-btn--ghost b-btn--sm">Log in</Link>
+                  <Link href="/signup" className="b-btn b-btn--primary b-btn--sm">Get Started</Link>
+                </>
+              )}
             </div>
-            <span style={{ fontSize: "clamp(1rem, 3.8vw, 1.25rem)", whiteSpace: "nowrap" }}>Vastavik Learning</span>
-          </Link>
 
-          <nav>
-            <ul className="b-nav__links">
-              {NAV_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className={"b-nav__link" + (here(l.href) ? " b-nav__link--active" : "")}>
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="b-nav__cta b-nav__cta--desktop">
-            {user ? (
-              <Link href="/profile" className="b-avatar" title={user.name || user.email}>{initial}</Link>
-            ) : (
-              <>
-                <Link href="/login" className="b-btn b-btn--ghost b-btn--sm">Log in</Link>
-                <Link href="/signup" className="b-btn b-btn--primary b-btn--sm">Get Started</Link>
-              </>
-            )}
+            <button
+              className="b-nav__toggle"
+              aria-label="Open menu"
+              aria-expanded={open}
+              onClick={() => setOpen(true)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            </button>
           </div>
-
-          <button
-            className="b-nav__toggle"
-            aria-label="Open menu"
-            aria-expanded={open}
-            onClick={() => setOpen(true)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M3 6h18M3 12h18M3 18h18" />
-            </svg>
-          </button>
         </div>
       </header>
 
