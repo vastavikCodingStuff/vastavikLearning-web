@@ -4,25 +4,41 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/components/Toast";
+import { authApi, setTokens } from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const toast = useToast();
   const router = useRouter();
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) { toast("Please enter your email and password", "err"); return; }
-    setUser({ name: email.split("@")[0], email, role: "student" });
-    toast("Welcome back!", "ok");
-    setTimeout(() => router.push("/dashboard"), 400);
+    setLoading(true);
+    try {
+      const res = await authApi.login({ email, password });
+      setTokens(res.access_token, res.refresh_token);
+      localStorage.setItem("vastavik_user", JSON.stringify({
+        user_id: res.user_id,
+        name: res.name,
+        email: res.email,
+        role: res.role,
+      }));
+      toast("Welcome back!", "ok");
+      setTimeout(() => router.push("/dashboard"), 400);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Login failed";
+      toast(msg, "err");
+    } finally {
+      setLoading(false);
+    }
   };
+
   const social = (p: string) => {
-    setUser({ name: p + " User", email: p + "@vastaviklearning.online", role: "student" });
-    toast("Signed in with " + p, "ok");
-    setTimeout(() => router.push("/dashboard"), 400);
+    toast(p + " OAuth coming soon", "ok");
   };
 
   return (
@@ -41,23 +57,25 @@ export default function LoginPage() {
             <label className="b-label" htmlFor="email">Email</label>
             <div className="b-form-row">
               <span className="b-form-icon">✉</span>
-              <input id="email" type="email" className="b-input" placeholder="you@school.edu" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+              <input id="email" type="email" className="b-input" placeholder="you@school.edu" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" disabled={loading} />
             </div>
           </div>
           <div className="b-form-group">
             <label className="b-label" htmlFor="password">Password</label>
             <div className="b-form-row">
               <span className="b-form-icon">🔒</span>
-              <input id="password" type="password" className="b-input" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+              <input id="password" type="password" className="b-input" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" disabled={loading} />
             </div>
           </div>
           <div className="flex justify-between items-center mb-2" style={{ fontSize: "0.9rem" }}>
             <label style={{ display: "inline-flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
-              <input type="checkbox" /> Remember me
+              <input type="checkbox" disabled={loading} /> Remember me
             </label>
             <Link href="/forgot-password">Forgot password?</Link>
           </div>
-          <button type="submit" className="b-btn b-btn--primary b-btn--block b-btn--lg">Log In →</button>
+          <button type="submit" className="b-btn b-btn--primary b-btn--block b-btn--lg" disabled={loading}>
+            {loading ? "Signing in..." : "Log In →"}
+          </button>
         </form>
 
         <div className="b-auth__or">or continue with</div>
