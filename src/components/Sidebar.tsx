@@ -21,7 +21,7 @@ const ITEMS = [
 export default function Sidebar() {
   const path = usePathname();
   const router = useRouter();
-  const { clear } = useAuth();
+  const { logout } = useAuth();
   const toast = useToast();
 
   return (
@@ -40,7 +40,7 @@ export default function Sidebar() {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              clear();
+              logout();
               toast("Logged out", "ok");
               setTimeout(() => router.push("/"), 400);
             }}

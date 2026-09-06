@@ -13,7 +13,7 @@ const ACHIEVEMENTS = [
 ];
 
 export default function ProfileContent() {
-  const { user, clear } = useAuth();
+  const { user, logout } = useAuth();
   const initial = (user?.name || user?.email || "U").charAt(0).toUpperCase();
 
   return (
@@ -22,7 +22,7 @@ export default function ProfileContent() {
       <main className="b-dash__main">
         <div className="b-dash__head">
           <h1>My Profile</h1>
-          <button className="b-btn b-btn--ghost" onClick={clear}>Logout</button>
+          <button className="b-btn b-btn--ghost" onClick={logout}>Logout</button>
         </div>
 
         <div className="grid grid-2 mb-4">
