@@ -39,45 +39,49 @@ export default function HomePage() {
     <>
       <HomeStructuredData />
       {/* HERO */}
-      <section className="b-hero container" aria-labelledby="hero-title">
-        <div className="b-hero__grid">
-          <div>
-            <span className="b-tag b-tag--blue mb-2" style={{ display: "inline-flex" }}>NEW • AI Tutor powered by Gemini 3</span>
-            <h1 id="hero-title" className="b-hero__title mt-2">
-              Learn to <span className="highlight">Code</span>. Build to <span className="highlight highlight--pink">Ship</span>. Grow to <span className="highlight highlight--lime">Win</span>.
-            </h1>
-            <p className="b-hero__sub">
-              An interactive education platform for ICSE, CBSE and collegiate computer science — featuring live classrooms, AI-powered tutoring, instant code execution and a bold Neo-Brutalist design that makes learning feel like play.
-            </p>
-            <div className="b-hero__actions">
-              <Link href="/signup" className="b-btn b-btn--primary b-btn--lg">Start Free →</Link>
-              <Link href="/courses" className="b-btn b-btn--ghost b-btn--lg">Browse Courses</Link>
+      <section className="b-hero" aria-labelledby="hero-title">
+        <div className="container">
+          <div className="b-hero__grid">
+            <div>
+              <span className="b-tag b-tag--blue mb-2" style={{ display: "inline-flex" }}>NEW • AI Tutor powered by Gemini 3</span>
+              <h1 id="hero-title" className="b-hero__title mt-2">
+                Learn to <span className="highlight">Code.</span> Build to{" "}
+                <span className="highlight highlight--pink">Ship.</span> Grow to{" "}
+                <span className="highlight highlight--lime">Win.</span>
+              </h1>
+              <p className="b-hero__sub">
+                An interactive education platform for ICSE, CBSE and collegiate computer science — featuring live classrooms, AI-powered tutoring, instant code execution and a bold Neo-Brutalist design that makes learning feel like play.
+              </p>
+              <div className="b-hero__actions">
+                <Link href="/signup" className="b-btn b-btn--primary b-btn--lg">Start Free →</Link>
+                <Link href="/courses" className="b-btn b-btn--ghost b-btn--lg">Browse Courses</Link>
+              </div>
+              <div className="b-hero__stats" aria-label="Key statistics">
+                <div className="b-hero__stat"><strong>25K+</strong><span>Active learners</span></div>
+                <div className="b-hero__stat"><strong>120+</strong><span>Coding lessons</span></div>
+                <div className="b-hero__stat"><strong>4.9★</strong><span>App rating</span></div>
+              </div>
             </div>
-            <div className="b-hero__stats" aria-label="Key statistics">
-              <div className="b-hero__stat"><strong>25K+</strong><span>Active learners</span></div>
-              <div className="b-hero__stat"><strong>120+</strong><span>Coding lessons</span></div>
-              <div className="b-hero__stat"><strong>4.9★</strong><span>App rating</span></div>
-            </div>
-          </div>
-          <div className="b-hero__visual" aria-hidden="true">
-            <div className="v1 float" style={{ ["--rot" as any]: "-3deg" }}>
-              <div className="b-tag b-tag--blue">LIVE</div>
-              <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem" }}>Live Class</strong>
-              <span style={{ fontSize: "0.85rem" }}>Sorting Algorithms · 42 attending</span>
-            </div>
-            <div className="v2 float float--delay" style={{ ["--rot" as any]: "2deg" }}>
-              <div className="b-tag">NEW</div>
-              <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem" }}>Streak</strong>
-              <span style={{ fontSize: "1.8rem", fontWeight: 900 }}>14 days 🔥</span>
-            </div>
-            <div className="v3 float float--delay2" style={{ ["--rot" as any]: "-1deg" }}>
-              <div className="b-tag b-tag--lime">QUIZ</div>
-              <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem" }}>Score: 9/10</strong>
-              <span style={{ fontSize: "0.85rem" }}>Recursion Mastery</span>
-            </div>
-            <div className="v4 float" style={{ ["--rot" as any]: "4deg" }}>
-              <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem" }}>98%</strong>
-              <span style={{ fontSize: "0.8rem" }}>Completion Rate</span>
+            <div className="b-hero__visual" aria-hidden="true">
+              <div className="v1 float" style={{ ["--rot" as any]: "-3deg" }}>
+                <div className="b-tag b-tag--blue">LIVE</div>
+                <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.4rem" }}>Live Class</strong>
+                <span style={{ fontSize: "0.85rem" }}>Sorting Algorithms · 42 attending</span>
+              </div>
+              <div className="v2 float float--delay" style={{ ["--rot" as any]: "2deg" }}>
+                <div className="b-tag">NEW</div>
+                <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem" }}>Streak</strong>
+                <span style={{ fontSize: "1.8rem", fontWeight: 900 }}>14 days 🔥</span>
+              </div>
+              <div className="v3 float float--delay2" style={{ ["--rot" as any]: "-1deg" }}>
+                <div className="b-tag b-tag--lime">QUIZ</div>
+                <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem" }}>Score: 9/10</strong>
+                <span style={{ fontSize: "0.85rem" }}>Recursion Mastery</span>
+              </div>
+              <div className="v4 float" style={{ ["--rot" as any]: "4deg" }}>
+                <strong style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem" }}>98%</strong>
+                <span style={{ fontSize: "0.8rem" }}>Completion Rate</span>
+              </div>
             </div>
           </div>
         </div>

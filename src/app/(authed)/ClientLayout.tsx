@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import Navbar from "@/components/Navbar";
 
 export default function AuthedClientLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -17,10 +16,5 @@ export default function AuthedClientLayout({ children }: { children: React.React
     }
   }, [user, router]);
 
-  return (
-    <>
-      <Navbar />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
