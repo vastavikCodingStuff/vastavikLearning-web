@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 
 const COURSES = [
+  { slug: "java", title: "Java for ICSE Class 10", cat: "Programming", level: "Beginner", cover: "code", meta: "26 lessons · 10h", desc: "Master Strings, Arrays, Functions, and OOP concepts for ICSE Board Exams.", coverEmoji: "☕" },
   { slug: "python", title: "Python for Beginners", cat: "Programming", level: "Beginner", cover: "code", meta: "24 lessons · 8h", desc: "Start with Python — variables, loops, functions, OOP.", coverEmoji: "</>" },
   { slug: "web", title: "HTML & CSS Crash Course", cat: "Web Dev", level: "Beginner", cover: "web", meta: "16 lessons · 6h", desc: "Build your first web page. Layout, typography, animations, responsive design.", coverEmoji: "{ }" },
   { slug: "javascript", title: "JavaScript Mastery", cat: "Web Dev", level: "Intermediate", cover: "web", meta: "28 lessons · 12h", desc: "ES6+, async/await, DOM, fetch, modules. The full JS toolkit.", coverEmoji: "JS" },

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { notFound } from "next/navigation";
 
 export const COURSES: Record<string, { title: string; level: string; tag: string; rating: string; lessons: string; time: string; students: string; instructor: string; instructorRole: string }> = {
+  java: { title: "Java for ICSE Class 10", level: "🟢 Beginner", tag: "JAVA", rating: "⭐⭐⭐⭐⭐ 4.9 (3,410 ratings)", lessons: "26", time: "10 hours", students: "14,890", instructor: "Prof. Anjali Roy", instructorRole: "ICSE Computer Applications Lead" },
   python: { title: "Python for Beginners", level: "🟢 Beginner", tag: "PYTHON", rating: "⭐⭐⭐⭐⭐ 4.9 (2,184 ratings)", lessons: "24", time: "8 hours", students: "12,432", instructor: "Prof. Anjali Roy", instructorRole: "Sr. Engineer · 10+ yrs" },
   web: { title: "HTML & CSS Crash Course", level: "🟢 Beginner", tag: "WEB", rating: "⭐⭐⭐⭐⭐ 4.8 (1,512 ratings)", lessons: "16", time: "6 hours", students: "9,210", instructor: "Mr. Karthik Iyer", instructorRole: "Frontend Lead" },
   javascript: { title: "JavaScript Mastery", level: "🟡 Intermediate", tag: "JS", rating: "⭐⭐⭐⭐⭐ 4.9 (3,201 ratings)", lessons: "28", time: "12 hours", students: "15,807", instructor: "Ms. Neha Sharma", instructorRole: "Full-Stack Engineer" },
@@ -64,7 +65,7 @@ export function CourseDetailClient({ slug }: { slug: string }) {
               </div>
               <hr className="b-divider" />
               <div className="flex justify-between mb-2"><strong>Price</strong><span style={{ fontSize: "1.5rem", fontWeight: 900 }}>FREE</span></div>
-              <Link href="/lesson" className="b-btn b-btn--primary b-btn--block b-btn--lg mb-2">Start Course →</Link>
+              <Link href="/learn" className="b-btn b-btn--primary b-btn--block b-btn--lg mb-2">Start Course →</Link>
               <button className="b-btn b-btn--ghost b-btn--block b-btn--sm">♡ Add to wishlist</button>
             </div>
           </div>
@@ -92,7 +93,7 @@ export function CourseDetailClient({ slug }: { slug: string }) {
                         </div>
                       </div>
                       {mod.items.map((it) => (
-                        <Link key={it.n} href={it.locked ? "#" : "/lesson"} className="b-card b-card--sm mt-1" style={{ display: "block", opacity: it.locked ? 0.6 : 1 }}>
+                        <Link key={it.n} href={it.locked ? "#" : "/learn"} className="b-card b-card--sm mt-1" style={{ display: "block", opacity: it.locked ? 0.6 : 1 }}>
                           <div className="flex items-center gap-2">
                             <div className="b-avatar" style={{ background: it.done ? "var(--lime)" : it.locked ? "var(--surface2)" : "var(--surface)", color: "var(--black)", width: 32, height: 32, fontSize: "0.85rem" }}>
                               {it.done ? "✓" : it.locked ? "🔒" : it.n}

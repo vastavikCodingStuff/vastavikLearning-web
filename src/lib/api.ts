@@ -7,7 +7,8 @@
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vastaviklearning-backend-app.onrender.com";
 const API_KEY_ID = process.env.NEXT_PUBLIC_API_KEY_ID || "vastavik_prod_v1";
-const API_KEY_SECRET = process.env.NEXT_PUBLIC_API_KEY_SECRET || "";
+const API_KEY_SECRET =
+  process.env.NEXT_PUBLIC_API_KEY_SECRET || "super_secret_hmac_production_key_change_me_32char";
 
 // ─── Token Management ──────────────────────────────────────────────────────────
 
@@ -94,6 +95,7 @@ export async function apiFetch<T = unknown>(path: string, opts: FetchOptions = {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-api-key-id": API_KEY_ID,
+    "x-api-key-secret": API_KEY_SECRET,
     "x-timestamp": timestamp,
     "x-hmac": hmac,
   };
@@ -176,6 +178,7 @@ async function tryRefreshToken(): Promise<boolean> {
       headers: {
         "Content-Type": "application/json",
         "x-api-key-id": API_KEY_ID,
+        "x-api-key-secret": API_KEY_SECRET,
         "x-timestamp": timestamp,
         "x-hmac": hmac,
       },

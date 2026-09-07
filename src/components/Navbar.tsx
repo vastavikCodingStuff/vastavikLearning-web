@@ -6,8 +6,8 @@ import { useAuth } from "@/lib/auth";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
   { href: "/courses", label: "Courses" },
+  { href: "/learn", label: "Learn" },
   { href: "/practice", label: "Practice" },
   { href: "/quiz", label: "Quiz" },
   { href: "/meetings", label: "Live" },
@@ -17,8 +17,8 @@ const NAV_LINKS = [
 
 const MOBILE_NAV = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
   { href: "/courses", label: "Courses" },
+  { href: "/learn", label: "Learn (Lectures)" },
   { href: "/practice", label: "Practice" },
   { href: "/quiz", label: "Quiz" },
   { href: "/meetings", label: "Live Classes" },
@@ -27,6 +27,7 @@ const MOBILE_NAV = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/pyq", label: "PYQ Archive" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
