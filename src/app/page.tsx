@@ -53,7 +53,7 @@ export default function HomePage() {
                 An interactive education platform for ICSE, CBSE and collegiate computer science — featuring live classrooms, AI-powered tutoring, instant code execution and a bold Neo-Brutalist design that makes learning feel like play.
               </p>
               <div className="b-hero__actions">
-                <Link href="/signup" className="b-btn b-btn--primary b-btn--lg">Start Free →</Link>
+                <Link href="/learn" className="b-btn b-btn--primary b-btn--lg">Start Learning →</Link>
                 <Link href="/courses" className="b-btn b-btn--ghost b-btn--lg">Browse Courses</Link>
               </div>
               <div className="b-hero__stats" aria-label="Key statistics">
