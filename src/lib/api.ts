@@ -223,12 +223,40 @@ export type UserProfile = {
   subscription_expires_at: string | null;
 };
 
-export const authApi = {
-  signup: (data: { email: string; password: string; name: string; board: string; language: string }) =>
-    apiFetch<AuthResponse>("/api/v1/auth/signup", { method: "POST", body: data }),
+function getDeviceId(): string {
+  if (typeof window === "undefined") return "";
+  let id = localStorage.getItem("vastavik_device_id");
+  if (!id) {
+    id = (crypto as any).randomUUID ? (crypto as any).randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem("vastavik_device_id", id);
+  }
+  return id;
+}
 
-  login: (data: { email: string; password: string }) =>
-    apiFetch<AuthResponse>("/api/v1/auth/login", { method: "POST", body: data }),
+export const authApi = {
+  signup: (data: { email: string; password: string; name: string; board: string; language: string }) => {
+    const referral_code = typeof window !== "undefined" ? localStorage.getItem("pending_referral_code") : null;
+    const share_token = typeof window !== "undefined" ? localStorage.getItem("pending_share_token") : null;
+    const device_fingerprint = getDeviceId();
+    return apiFetch<AuthResponse>("/api/v1/auth/signup", {
+      method: "POST",
+      body: { ...data, referral_code: referral_code || undefined, share_token: share_token || undefined, device_fingerprint, device_name: navigator.userAgent.slice(0, 80), platform: "web" },
+    }).then((res) => {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("pending_referral_code");
+        localStorage.removeItem("pending_share_token");
+      }
+      return res;
+    });
+  },
+
+  login: (data: { email: string; password: string }) => {
+    const device_fingerprint = getDeviceId();
+    return apiFetch<AuthResponse>("/api/v1/auth/login", {
+      method: "POST",
+      body: { ...data, device_fingerprint, device_name: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 80) : undefined, platform: "web" },
+    });
+  },
 
   refresh: (refresh_token: string) =>
     apiFetch<AuthResponse>("/api/v1/auth/refresh", { method: "POST", body: { refresh_token } }),
@@ -421,14 +449,65 @@ export const searchApi = {
 // ─── Payments API ───────────────────────────────────────────────────────────────
 
 export const paymentsApi = {
-  createOrder: (plan_id: string, amount: number) =>
-    apiFetch<{ order_id: string; amount: number; currency: string; checksum: string; payment_url: string }>(
+  createOrder: (coupon_code?: string) =>
+    apiFetch<{ order_id: string; amount_paise: number; currency: string; razorpay_order_id: string | null; skip_payment: boolean; quote: { total_amount: number; total_amount_paise: number; base_amount: number; discount_amount: number; gst_amount: number } }>(
       "/api/v1/payments/create-order",
-      { method: "POST", requireAuth: true, body: { plan_id, amount } }
+      { method: "POST", requireAuth: true, body: { plan_id: "monthly_pro", coupon_code: coupon_code || undefined } }
     ),
+
+  verifyPayment: (razorpay_order_id: string, razorpay_payment_id: string, razorpay_signature: string) =>
+    apiFetch<{ success: boolean; message: string }>("/api/v1/payments/verify", {
+      method: "POST",
+      requireAuth: true,
+      body: { razorpay_order_id, razorpay_payment_id, razorpay_signature },
+    }),
 
   getHistory: () =>
     apiFetch("/api/v1/payments/history", { requireAuth: true }),
+
+  getQuote: () =>
+    apiFetch<{ base_amount: number; discount_amount: number; taxable_amount: number; gst_amount: number; total_amount: number; total_amount_paise: number; credit_balance_inr: number }>(
+      "/api/v1/pricing/quote",
+      { requireAuth: true }
+    ),
+};
+
+// ─── Growth API ─────────────────────────────────────────────────────────────────
+
+export const growthApi = {
+  getReferralStatus: () =>
+    apiFetch<{ code: string | null; eligible: boolean; rewarded_count: number; cap: number; remaining_count: number; credit_balance_inr: number; history: any[] }>(
+      "/api/v1/referral/status",
+      { requireAuth: true }
+    ),
+
+  generateReferralCode: () =>
+    apiFetch<{ code: string; eligible: boolean }>("/api/v1/referral/generate", { method: "POST", requireAuth: true }),
+
+  getShareStatus: () =>
+    apiFetch<{ eligible: boolean; cap: number; rewarded_count: number; remaining_count: number; shares: any[] }>(
+      "/api/v1/share/status",
+      { requireAuth: true }
+    ),
+
+  generateShareToken: () =>
+    apiFetch<{ token: string; share_url: string; eligible: boolean; cap_reached?: boolean; message?: string }>(
+      "/api/v1/share/generate",
+      { method: "POST", requireAuth: true }
+    ),
+
+  trackShareClick: (token: string) =>
+    apiFetch<{ clicks: number }>(`/api/v1/share/track/${token}`, { method: "POST", body: { user_agent: typeof navigator !== "undefined" ? navigator.userAgent : "" } }),
+
+  redeemCoupon: (code: string) =>
+    apiFetch<{ success: boolean; already_active: boolean; message: string }>("/api/v1/coupon/redeem", {
+      method: "POST",
+      requireAuth: true,
+      body: { code },
+    }),
+
+  getCreditsBalance: () =>
+    apiFetch<{ credit_balance_inr: number; ledger: any[] }>("/api/v1/credits/balance", { requireAuth: true }),
 };
 
 // ─── System API ─────────────────────────────────────────────────────────────────

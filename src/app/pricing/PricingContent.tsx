@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/Toast";
+import { paymentsApi } from "@/lib/api";
 
 const PLANS = [
   {
@@ -10,72 +11,81 @@ const PLANS = [
     desc: "Get started with the basics.",
     featured: false,
     cta: "Current plan",
-    feats: [
-      "Access to 5 free courses",
-      "Limited AI tutor (20 msgs/day)",
-      "Basic quizzes",
-      "Community support",
-    ],
+    feats: ["Access to 5 free courses", "Limited AI tutor (20 msgs/day)", "Basic quizzes", "Community support"],
   },
   {
     name: "Pro",
-    price: "₹199",
+    price: "₹149",
     period: "/month",
-    desc: "Unlock everything. Best for serious learners.",
+    desc: "Vastavik Pro — one plan, everything included. Credits pre-GST.",
     featured: true,
     cta: "Subscribe with Razorpay",
-    feats: [
-      "All 120+ courses & lessons",
-      "Unlimited AI tutor",
-      "Live classrooms + recordings",
-      "Premium quizzes & PYQs",
-      "Certificate on completion",
-      "Priority support",
-    ],
+    feats: ["All 120+ courses & lessons", "Unlimited AI tutor", "Live classrooms + recordings", "Premium quizzes & PYQs", "Certificate on completion", "Priority support"],
     badge: "MOST POPULAR",
-  },
-  {
-    name: "Team",
-    price: "₹999",
-    period: "/month (5 seats)",
-    desc: "For schools, tuitions and study groups.",
-    featured: false,
-    cta: "Contact sales",
-    feats: [
-      "Everything in Pro",
-      "5 student seats included",
-      "Admin dashboard",
-      "Bulk progress reports",
-      "Custom learning paths",
-      "Dedicated success manager",
-    ],
   },
 ];
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 export default function PricingContent() {
   const toast = useToast();
+  const [coupon, setCoupon] = useState("");
+  const [quote, setQuote] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
-  const subscribe = (plan: string) => {
+  useEffect(() => {
+    paymentsApi.getQuote().then(setQuote).catch(() => {});
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.async = true;
+    document.body.appendChild(s);
+    return () => { s.remove(); };
+  }, []);
+
+  const subscribe = async (plan: string) => {
     if (plan === "Free") { toast("You're on the Free plan", "ok"); return; }
-    if (plan === "Team") { window.location.href = "/contact"; return; }
-    const options = {
-      key: "rzp_test_YOUR_KEY_ID",
-      subscription_id: "sub_" + Date.now(),
-      name: "Vastavik Learning",
-      description: plan + " Plan — Monthly UPI Autopay",
-      image: "https://placehold.co/100x100/2563EB/FFF?text=V",
-      handler: function (response: any) {
-        toast("🎉 Subscribed! Payment ID: " + response.razorpay_payment_id, "ok");
-      },
-      prefill: { name: "", email: "", contact: "" },
-      notes: { plan: plan, autopay: "UPI" },
-      theme: { color: "#2563EB" },
-      method: { upi: true, card: true, netbanking: true, wallet: true },
-      recurring: 1,
-    };
-    toast("Opening Razorpay checkout…", "ok");
-    console.log("Razorpay options:", options);
-    setTimeout(() => toast("Demo: Razorpay UPI Autopay would open here", "ok"), 600);
+    setLoading(true);
+    try {
+      const order = await paymentsApi.createOrder(coupon || undefined);
+      if (order.skip_payment) {
+        toast("Free access activated — no payment needed", "ok");
+        setQuote(order.quote);
+        return;
+      }
+      const key = process.env.NEXT_PUBLIC_RAZORPAY_KEY || "";
+      if (!key) { toast("Razorpay key not configured", "err"); return; }
+      const options = {
+        key,
+        order_id: order.order_id,
+        amount: order.amount_paise,
+        currency: "INR",
+        name: "Vastavik Learning",
+        description: "Vastavik Pro Monthly",
+        handler: async function (response: any) {
+          try {
+            await paymentsApi.verifyPayment(order.order_id, response.razorpay_payment_id, response.razorpay_signature);
+            toast("Payment verified — Pro activated", "ok");
+            const q = await paymentsApi.getQuote().catch(() => null);
+            if (q) setQuote(q);
+          } catch (e: any) {
+            toast("Verification failed: " + (e.message || "error"), "err");
+          }
+        },
+        prefill: { name: "", email: "", contact: "" },
+        theme: { color: "#2563EB" },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", function (resp: any) { toast("Payment failed: " + (resp.error?.description || "unknown"), "err"); });
+      rzp.open();
+    } catch (e: any) {
+      toast(e.message || "Order creation failed", "err");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -84,12 +94,18 @@ export default function PricingContent() {
         <div className="container">
           <span className="b-tag mb-2" style={{ display: "inline-flex" }}>💰 PRICING</span>
           <h1>Simple, honest pricing.</h1>
-          <p>No hidden fees. Cancel anytime. UPI Autopay powered by Razorpay.</p>
+          <p>₹149 + 18% GST. Credits from referrals/shares apply before GST. Cancel anytime. UPI Autopay via Razorpay.</p>
+          {quote && <p className="mt-2 text-sm">Your quote: Base ₹{quote.base_amount} — discount ₹{quote.discount_amount} + GST ₹{quote.gst_amount} = <strong>₹{quote.total_amount}</strong> {quote.credit_balance_inr > 0 && <span>(credits ₹{quote.credit_balance_inr})</span>}</p>}
         </div>
       </section>
 
       <section className="section">
         <div className="container">
+          <div className="mb-4 flex gap-2 items-center">
+            <input value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())} placeholder="Offline coupon code" className="b-input" style={{ maxWidth: 260 }} />
+            <span className="muted" style={{ fontSize: "0.85rem" }}>Enter at checkout — free access if valid.</span>
+          </div>
+
           <div className="grid grid-3">
             {PLANS.map((p) => (
               <div key={p.name} className={"b-price" + (p.featured ? " b-price--featured" : "")}>
@@ -100,8 +116,8 @@ export default function PricingContent() {
                 <ul className="b-price__feats">
                   {p.feats.map((f) => <li key={f}>{f}</li>)}
                 </ul>
-                <button className={"b-btn b-btn--block b-btn--lg " + (p.featured ? "b-btn--dark" : "b-btn--ghost")} onClick={() => subscribe(p.name)}>
-                  {p.cta} →
+                <button className={"b-btn b-btn--block b-btn--lg " + (p.featured ? "b-btn--dark" : "b-btn--ghost")} onClick={() => subscribe(p.name)} disabled={loading}>
+                  {loading ? "..." : p.cta} →
                 </button>
                 {p.featured && <p className="muted text-center" style={{ fontSize: "0.85rem", marginTop: 8 }}>🔁 Auto-renews monthly · Cancel anytime</p>}
               </div>
@@ -113,40 +129,13 @@ export default function PricingContent() {
               <div>
                 <span className="b-tag mb-2" style={{ display: "inline-flex", background: "var(--blue)", color: "var(--white)" }}>RAZORPAY</span>
                 <h2 className="mt-1">UPI Autopay enabled</h2>
-                <p className="mt-2" style={{ fontSize: "1.05rem" }}>Subscribe in 30 seconds with any UPI app — Google Pay, PhonePe, Paytm, BHIM. Your subscription auto-renews monthly. Cancel from your dashboard anytime.</p>
-                <ul style={{ marginTop: 16, paddingLeft: 20 }}>
-                  <li>🔐 Bank-grade encryption (PCI-DSS Level 1)</li>
-                  <li>⚡ Instant activation</li>
-                  <li>🇮🇳 Made for India, supports all major UPI apps</li>
-                  <li>📧 Email receipts & invoices</li>
-                </ul>
+                <p className="mt-2" style={{ fontSize: "1.05rem" }}>Subscribe in 30 seconds with any UPI app — Google Pay, PhonePe, Paytm, BHIM. Auto-renews monthly. Cancel from dashboard anytime.</p>
               </div>
               <div className="b-card text-center" style={{ background: "var(--white)" }}>
                 <h3>Try it now</h3>
-                <p className="muted mt-1">Subscribe to Pro for ₹199/month</p>
-                <button className="b-btn b-btn--primary b-btn--block b-btn--lg mt-2" onClick={() => subscribe("Pro")}>Subscribe with UPI</button>
-                <p className="muted mt-2" style={{ fontSize: "0.8rem" }}>No credit card required</p>
+                <p className="muted mt-1">Pro for ₹149 + GST{quote && quote.discount_amount > 0 ? ` — you pay ₹${quote.total_amount}` : ""}</p>
+                <button className="b-btn b-btn--primary b-btn--block b-btn--lg mt-2" onClick={() => subscribe("Pro")} disabled={loading}>Subscribe with UPI</button>
               </div>
-            </div>
-          </div>
-
-          <h2 className="mt-5 mb-3 text-center">Frequently asked questions</h2>
-          <div className="grid grid-2">
-            <div className="b-card b-card--sm">
-              <strong>Can I cancel anytime?</strong>
-              <p className="muted mt-1">Yes. Cancel from your dashboard with one click. You&apos;ll keep access until the end of your billing period.</p>
-            </div>
-            <div className="b-card b-card--sm">
-              <strong>What payment methods do you support?</strong>
-              <p className="muted mt-1">UPI (GPay, PhonePe, Paytm, BHIM), debit/credit cards, netbanking, and wallets. All via Razorpay.</p>
-            </div>
-            <div className="b-card b-card--sm">
-              <strong>Is there a refund policy?</strong>
-              <p className="muted mt-1">Yes — 7-day no-questions-asked refund for first-time subscribers. See our <a href="/refund">Cancellation & Refund</a> page.</p>
-            </div>
-            <div className="b-card b-card--sm">
-              <strong>Do you offer student discounts?</strong>
-              <p className="muted mt-1">Yes! 50% off with a valid .edu email. Contact us at <a href="/contact">support</a>.</p>
             </div>
           </div>
         </div>
