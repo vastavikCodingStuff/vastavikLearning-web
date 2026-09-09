@@ -14,6 +14,8 @@ const API_KEY_SECRET =
 
 const ACCESS_TOKEN_KEY = "vastavik_access_token";
 const REFRESH_TOKEN_KEY = "vastavik_refresh_token";
+export const BANNED_KEY = "vastavik_banned";
+export const BAN_REASON_KEY = "vastavik_ban_reason";
 
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -35,6 +37,61 @@ export function clearTokens() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+export function isUserBanned(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(BANNED_KEY) === "true";
+}
+
+export function getBanReason(): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(BAN_REASON_KEY) || "Your account has been banned and deleted by the administrator.";
+}
+
+export function handleAccountBanned(reason?: string) {
+  if (typeof window === "undefined") return;
+  clearTokens();
+  localStorage.removeItem("vastavik_user");
+  localStorage.setItem(BANNED_KEY, "true");
+  if (reason) localStorage.setItem(BAN_REASON_KEY, reason);
+  const path = window.location.pathname;
+  if (path !== "/banned" && path !== "/login" && path !== "/signup") {
+    window.location.href = "/banned";
+  }
+}
+
+export function clearBanStatus() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(BANNED_KEY);
+  localStorage.removeItem(BAN_REASON_KEY);
+}
+
+// ─── Proactive Backend Warm-up (Render Cold-Start Protection) ─────────────────
+
+let warmupPromise: Promise<boolean> | null = null;
+
+export function warmUpBackend(): Promise<boolean> {
+  if (typeof window === "undefined") return Promise.resolve(false);
+  if (warmupPromise) return warmupPromise;
+
+  warmupPromise = (async () => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s cold-start tolerance
+      const res = await fetch(`${BACKEND_URL}/health`, {
+        method: "GET",
+        headers: { "User-Agent": "VastavikLearning-Web-Prewarm" },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      return res.ok;
+    } catch {
+      return false;
+    }
+  })();
+
+  return warmupPromise;
 }
 
 // ─── HMAC Signing ───────────────────────────────────────────────────────────────
@@ -72,7 +129,11 @@ export class ApiError extends Error {
 }
 
 export async function apiFetch<T = unknown>(path: string, opts: FetchOptions = {}): Promise<T> {
-  const { method = "GET", body, requireAuth = false, params, timeout = 15000 } = opts;
+  const { method = "GET", body, requireAuth = false, params, timeout = 25000 } = opts;
+
+  if (requireAuth && isUserBanned()) {
+    throw new ApiError(403, getBanReason() || "Your account has been banned and deleted by the administrator.");
+  }
 
   // Build URL with query params
   const url = new URL(path, BACKEND_URL);
@@ -108,58 +169,97 @@ export async function apiFetch<T = unknown>(path: string, opts: FetchOptions = {
     }
   }
 
-  // Abort controller for timeout
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  const maxRetries = 3;
+  let attempt = 0;
+  let lastError: unknown = null;
 
-  try {
-    const res = await fetch(url.toString(), {
-      method: methodUpper,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-      signal: controller.signal,
-    });
+  while (attempt <= maxRetries) {
+    if (attempt > 0) {
+      const delayMs = 1500 * attempt;
+      console.warn(`[ColdStartRetry] Render edge proxy transient status/timeout on ${path}. Retrying #${attempt} in ${delayMs}ms...`);
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
 
-    clearTimeout(timeoutId);
+    // Abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-    // Handle 401 — try token refresh
-    if (res.status === 401 && requireAuth) {
-      const refreshed = await tryRefreshToken();
-      if (refreshed) {
-        // Retry with new token
-        const newToken = getAccessToken();
-        if (newToken) headers["Authorization"] = `Bearer ${newToken}`;
-        const retryRes = await fetch(url.toString(), {
-          method: methodUpper,
-          headers,
-          body: body ? JSON.stringify(body) : undefined,
-          signal: controller.signal,
-        });
-        if (!retryRes.ok) {
-          const errBody = await retryRes.json().catch(() => null);
-          throw new ApiError(retryRes.status, `API error: ${retryRes.status}`, errBody);
-        }
-        return retryRes.json();
-      } else {
-        clearTokens();
-        throw new ApiError(401, "Session expired. Please log in again.");
+    try {
+      const res = await fetch(url.toString(), {
+        method: methodUpper,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      // If Render edge proxy returned 502/503/504 while booting container, retry
+      if ([502, 503, 504].includes(res.status) && attempt < maxRetries) {
+        attempt++;
+        continue;
       }
-    }
 
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => null);
-      throw new ApiError(res.status, `API error: ${res.status}`, errBody);
-    }
+      // Handle 403 Account Banned
+      if (res.status === 403) {
+        const errBody: any = await res.json().catch(() => null);
+        const detailStr = typeof errBody === "object" && errBody ? (errBody.detail || errBody.message || "") : "";
+        if (detailStr === "ACCOUNT_BANNED" || String(detailStr).toLowerCase().includes("banned")) {
+          const reason = errBody?.message || "Your account has been banned and deleted by the administrator.";
+          handleAccountBanned(reason);
+          throw new ApiError(403, reason, errBody);
+        }
+        throw new ApiError(403, detailStr || "Access forbidden", errBody);
+      }
 
-    return res.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err instanceof ApiError) throw err;
-    if ((err as Error).name === "AbortError") {
-      throw new ApiError(408, "Request timeout");
+      // Handle 401 — try token refresh
+      if (res.status === 401 && requireAuth) {
+        const refreshed = await tryRefreshToken();
+        if (refreshed) {
+          // Retry with new token
+          const newToken = getAccessToken();
+          if (newToken) headers["Authorization"] = `Bearer ${newToken}`;
+          const retryRes = await fetch(url.toString(), {
+            method: methodUpper,
+            headers,
+            body: body ? JSON.stringify(body) : undefined,
+            signal: controller.signal,
+          });
+          if (!retryRes.ok) {
+            const errBody = await retryRes.json().catch(() => null);
+            throw new ApiError(retryRes.status, `API error: ${retryRes.status}`, errBody);
+          }
+          return retryRes.json();
+        } else {
+          clearTokens();
+          throw new ApiError(401, "Session expired. Please log in again.");
+        }
+      }
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        throw new ApiError(res.status, `API error: ${res.status}`, errBody);
+      }
+
+      return res.json();
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err instanceof ApiError) throw err;
+
+      if (attempt < maxRetries) {
+        lastError = err;
+        attempt++;
+        continue;
+      }
+
+      if ((err as Error).name === "AbortError") {
+        throw new ApiError(408, "Request timeout — Render backend is cold-starting, please retry in a few moments.");
+      }
+      throw new ApiError(0, `Network error: ${(err as Error).message}`);
     }
-    throw new ApiError(0, `Network error: ${(err as Error).message}`);
   }
+
+  throw lastError instanceof ApiError ? lastError : new ApiError(502, "Render backend cold start timeout. Please refresh.");
 }
 
 // ─── Token Refresh ──────────────────────────────────────────────────────────────
@@ -227,14 +327,18 @@ function getDeviceId(): string {
   if (typeof window === "undefined") return "";
   let id = localStorage.getItem("vastavik_device_id");
   if (!id) {
-    id = (crypto as any).randomUUID ? (crypto as any).randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36);
-    localStorage.setItem("vastavik_device_id", id);
+    const genId: string = (typeof crypto !== "undefined" && typeof (crypto as any).randomUUID === "function")
+      ? (crypto as any).randomUUID()
+      : Math.random().toString(36).slice(2) + Date.now().toString(36);
+    id = genId;
+    localStorage.setItem("vastavik_device_id", genId);
   }
   return id;
 }
 
 export const authApi = {
   signup: (data: { email: string; password: string; name: string; board: string; language: string }) => {
+    clearBanStatus();
     const referral_code = typeof window !== "undefined" ? localStorage.getItem("pending_referral_code") : null;
     const share_token = typeof window !== "undefined" ? localStorage.getItem("pending_share_token") : null;
     const device_fingerprint = getDeviceId();
@@ -257,6 +361,9 @@ export const authApi = {
       body: { ...data, device_fingerprint, device_name: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 80) : undefined, platform: "web" },
     });
   },
+
+  checkAccountStatus: () =>
+    apiFetch<{ status: string; is_banned: boolean; message?: string }>("/api/v1/auth/account-status", { requireAuth: true }),
 
   refresh: (refresh_token: string) =>
     apiFetch<AuthResponse>("/api/v1/auth/refresh", { method: "POST", body: { refresh_token } }),

@@ -1,8 +1,9 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { catalogApi, type CourseItem } from "@/lib/api";
 
-const COURSES = [
+const DEFAULT_COURSES = [
   { slug: "java", title: "Java for ICSE Class 10", cat: "Programming", level: "Beginner", cover: "code", meta: "26 lessons · 10h", desc: "Master Strings, Arrays, Functions, and OOP concepts for ICSE Board Exams.", coverEmoji: "☕" },
   { slug: "python", title: "Python for Beginners", cat: "Programming", level: "Beginner", cover: "code", meta: "24 lessons · 8h", desc: "Start with Python — variables, loops, functions, OOP.", coverEmoji: "</>" },
   { slug: "web", title: "HTML & CSS Crash Course", cat: "Web Dev", level: "Beginner", cover: "web", meta: "16 lessons · 6h", desc: "Build your first web page. Layout, typography, animations, responsive design.", coverEmoji: "{ }" },
@@ -19,15 +20,58 @@ export default function CoursesPage() {
   const [q, setQ] = useState("");
   const [level, setLevel] = useState("");
   const [cat, setCat] = useState("");
+  const [backendCourses, setBackendCourses] = useState<CourseItem[]>([]);
+  const [loadingBackend, setLoadingBackend] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setLoadingBackend(true);
+    catalogApi.getHome()
+      .then((data) => {
+        if (active && data?.courses && data.courses.length > 0) {
+          setBackendCourses(data.courses);
+        }
+      })
+      .catch(() => {
+        // Fallback to default static catalog
+      })
+      .finally(() => {
+        if (active) setLoadingBackend(false);
+      });
+
+    return () => { active = false; };
+  }, []);
+
+  const allCourses = useMemo(() => {
+    if (!backendCourses.length) return DEFAULT_COURSES;
+
+    const dynamicList = backendCourses.map((bc) => ({
+      slug: bc.id.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      title: bc.title,
+      cat: "Programming",
+      level: "All Levels",
+      cover: "code",
+      meta: "Live Course · Active",
+      desc: bc.description || "Comprehensive hands-on curriculum with video lectures, exercises and real-time execution.",
+      coverEmoji: "⚡",
+      isLive: true,
+    }));
+
+    // Deduplicate by title/slug
+    const existingTitles = new Set(dynamicList.map((d) => d.title.toLowerCase()));
+    const remainingDefaults = DEFAULT_COURSES.filter((c) => !existingTitles.has(c.title.toLowerCase()));
+
+    return [...dynamicList, ...remainingDefaults];
+  }, [backendCourses]);
 
   const filtered = useMemo(() => {
-    return COURSES.filter((c) => {
+    return allCourses.filter((c) => {
       const matchQ = !q || c.title.toLowerCase().includes(q.toLowerCase()) || c.desc.toLowerCase().includes(q.toLowerCase());
-      const matchL = !level || c.level === level;
+      const matchL = !level || c.level === level || c.level === "All Levels";
       const matchC = !cat || c.cat === cat;
       return matchQ && matchL && matchC;
     });
-  }, [q, level, cat]);
+  }, [allCourses, q, level, cat]);
 
   return (
     <>
