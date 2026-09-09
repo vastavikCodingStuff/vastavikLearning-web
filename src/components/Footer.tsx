@@ -44,6 +44,7 @@ export default function Footer() {
             <Link href="/quiz">Quizzes</Link>
             <Link href="/meetings">Live Classes</Link>
             <Link href="/ai-chat">AI Tutor</Link>
+            <Link href="/download">Android App (v1.0.51)</Link>
           </div>
           <div>
             <h4>Company</h4>

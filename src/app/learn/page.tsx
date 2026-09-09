@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useToast } from "@/components/Toast";
+import PrivacyWatermark from "@/components/PrivacyWatermark";
 
 export type VideoFormat = "screen" | "whiteboard" | "shorts";
 
@@ -775,6 +776,7 @@ export default function LearnPage() {
 
   return (
     <>
+      <PrivacyWatermark />
       {/* ── COURSE HEADER (COURSE ON TOP) ─────────────────────────── */}
       <section className="b-page-head b-page-head--blue">
         <div className="container">

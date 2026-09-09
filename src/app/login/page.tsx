@@ -29,7 +29,13 @@ export default function LoginPage() {
       }));
       toast("Welcome back!", "ok");
       setTimeout(() => router.push("/dashboard"), 400);
-    } catch (err: unknown) {
+    } catch (err: any) {
+      if (err?.status === 403 || String(err?.message || "").toLowerCase().includes("banned")) {
+        const banMsg = err?.message || "Your account has been banned and deleted by the administrator.";
+        toast(banMsg, "err");
+        setTimeout(() => router.push("/banned"), 500);
+        return;
+      }
       const msg = err instanceof Error ? err.message : "Login failed";
       toast(msg, "err");
     } finally {

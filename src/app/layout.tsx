@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/auth";
 import { ToastProvider } from "@/components/Toast";
+import BackendWarmup from "@/components/BackendWarmup";
 import { SITE, GLOBAL_KEYWORDS } from "@/lib/seo";
 import { SITE_LD } from "@/lib/structured-data";
 
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="skip-link">Skip to main content</a>
         <AuthProvider>
           <ToastProvider>
+            <BackendWarmup />
             <Navbar />
             <main id="main">{children}</main>
             <Footer />

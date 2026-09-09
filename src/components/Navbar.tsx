@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/meetings", label: "Live" },
   { href: "/ai-chat", label: "AI Tutor" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/download", label: "📱 App" },
 ];
 
 const MOBILE_NAV = [
@@ -27,6 +28,7 @@ const MOBILE_NAV = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/pyq", label: "PYQ Archive" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/download", label: "📱 Download Android App" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
